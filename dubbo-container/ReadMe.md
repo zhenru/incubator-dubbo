@@ -1,0 +1,1 @@
+可能dubbo并不是部署在tomcat或者是jboss中的,这个时候提供一个容器使用main＋spring的方式来实现一种启动方式。

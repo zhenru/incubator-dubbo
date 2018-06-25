@@ -1,0 +1,2 @@
+这个对象中主要包括了远端同行的部分。其中有两个一个是`remote-api`以及其实现的spi这些包括了服务器端和客户端。还有是zookeeper，这部分封装了和zookeeper相关client的内容。
+这里需要搞清楚的是我们默认的使用的是哪一个进行consumer和provider通信的。以及使用zk和registry进行通信的部分。
