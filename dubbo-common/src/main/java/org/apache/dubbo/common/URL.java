@@ -65,6 +65,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * for this case, url protocol = null, url host = home, url path = user1/router.js
  * </ul>
  *
+ * todo 有一种说法是所有的配置最后最终都会被转变为url,注册到注册中心上，然后通过注册中心将数据转发给服务消费方 muzhe
+ *
  * @see java.net.URL
  * @see java.net.URI
  */

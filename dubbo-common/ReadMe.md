@@ -1,0 +1,1 @@
+这个model主要是当前系统的工具了，以及通用模型。通用模型例如：https://dubbo.gitbooks.io/dubbo-dev-book/contract.html
