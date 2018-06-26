@@ -20,6 +20,7 @@ import java.util.Map;
 
 /**
  * RPC invoke result. (API, Prototype, NonThreadSafe)
+ * 会话域，这个也是和Invocation对应的一个Ｂean.
  *
  * @serial Don't change the class name and package name.
  * @see org.apache.dubbo.rpc.Invoker#invoke(Invocation)

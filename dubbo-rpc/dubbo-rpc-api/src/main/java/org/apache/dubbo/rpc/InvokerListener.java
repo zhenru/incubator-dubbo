@@ -21,13 +21,14 @@ import org.apache.dubbo.common.extension.SPI;
 
 /**
  * InvokerListener. (SPI, Singleton, ThreadSafe)
+ * 这个是主要是将添加一个Ｉnvoker对象中。
  */
 @SPI
 public interface InvokerListener {
 
     /**
      * The invoker referred
-     *
+     *　当前服务引用完成以后，会调用这个方法。
      * @param invoker
      * @throws RpcException
      * @see org.apache.dubbo.rpc.Protocol#refer(Class, URL)
@@ -36,7 +37,7 @@ public interface InvokerListener {
 
     /**
      * The invoker destroyed.
-     *
+     *　当这个　服务销毁以后，这个时候可以使用调用这个方法。这个需要看一下当前系统后期修改一下。
      * @param invoker
      * @see org.apache.dubbo.rpc.Invoker#destroy()
      */

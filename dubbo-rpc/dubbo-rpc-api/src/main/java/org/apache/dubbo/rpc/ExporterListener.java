@@ -36,6 +36,9 @@ public interface ExporterListener {
     /**
      * The exporter unexported.
      *
+     * 取消暴露，这个实现主要是取消发布一个服务。
+     * 可能在一些Protocol中可能会实现这个　接口。
+     *
      * @param exporter
      * @throws RpcException
      * @see org.apache.dubbo.rpc.Exporter#unexport()

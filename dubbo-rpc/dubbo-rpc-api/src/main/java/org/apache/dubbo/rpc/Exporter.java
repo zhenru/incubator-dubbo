@@ -18,6 +18,8 @@ package org.apache.dubbo.rpc;
 
 /**
  * Exporter. (API/SPI, Prototype, ThreadSafe)
+ * 这个是一个暴露服务，主要是将当前服务中的关键暴露出去
+ * 这个主要是对　　Invoker进行一个封装
  *
  * @see org.apache.dubbo.rpc.Protocol#export(Invoker)
  * @see org.apache.dubbo.rpc.ExporterListener
@@ -28,6 +30,8 @@ public interface Exporter<T> {
     /**
      * get invoker.
      *
+     * 从ＩＥxproter中获取到一个Ｉnvoker.
+     *
      * @return invoker
      */
     Invoker<T> getInvoker();
@@ -37,6 +41,7 @@ public interface Exporter<T> {
      * <p>
      * <code>
      * getInvoker().destroy();
+     * 这个方法主要是将当前的对象进行释放。可能Protocol中会使用到这个方法。
      * </code>
      */
     void unexport();

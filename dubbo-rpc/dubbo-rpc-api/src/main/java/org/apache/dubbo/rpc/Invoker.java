@@ -19,6 +19,10 @@ package org.apache.dubbo.rpc;
 import org.apache.dubbo.common.Node;
 
 /**
+ * 这个是整个系统的核心。所有的操作都会被转变为一个调用。
+ * 这个是一个实体域，表示一个远程调用。
+ * 这个是一个抽象实现，可以是各种调用，可以是本地实现，远端实现，集群实现。
+ * 很多地方都是Invoker
  * Invoker. (API/SPI, Prototype, ThreadSafe)
  *
  * @see org.apache.dubbo.rpc.Protocol#refer(Class, org.apache.dubbo.common.URL)
@@ -28,6 +32,8 @@ import org.apache.dubbo.common.Node;
 public interface Invoker<T> extends Node {
 
     /**
+     * 获取到Ｓervice对应的方法
+     *
      * get service interface.
      *
      * @return service interface.
@@ -35,6 +41,8 @@ public interface Invoker<T> extends Node {
     Class<T> getInterface();
 
     /**
+     * 通过调用invoke来调用当前系统
+     *
      * invoke.
      *
      * @param invocation

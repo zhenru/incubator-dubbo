@@ -39,6 +39,9 @@ import java.util.Map;
 
 import static org.apache.dubbo.rpc.protocol.dubbo.CallbackServiceCodec.decodeInvocationArgument;
 
+/**
+ * 这个是dubbo协议中特有的Invocation实现方式。
+ */
 public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Decodeable {
 
     private static final Logger log = LoggerFactory.getLogger(DecodeableRpcInvocation.class);

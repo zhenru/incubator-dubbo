@@ -19,6 +19,8 @@ package org.apache.dubbo.rpc;
 import java.util.Map;
 
 /**
+ * Invocation是实体域。主要表示调用中调用的那个方法和参数信息。
+ * RPC框架都围绕这个
  * Invocation. (API, Prototype, NonThreadSafe)
  *
  * @serial Don't change the class name and package name.
@@ -28,6 +30,7 @@ import java.util.Map;
 public interface Invocation {
 
     /**
+     * 服务方法的名称。
      * get method name.
      *
      * @return method name.
@@ -69,6 +72,7 @@ public interface Invocation {
 
     /**
      * get attachment by key with default value.
+     * attachment是类似与Http的报文头部，这里会传输一些和业务无关的参数。
      *
      * @return attachment value.
      * @serial

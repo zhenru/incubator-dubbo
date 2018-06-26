@@ -22,6 +22,8 @@ import org.apache.dubbo.common.extension.Adaptive;
 import org.apache.dubbo.common.extension.SPI;
 
 /**
+ * 这个是一个转换工厂，主要是用来将　一个定义的借口　　和　Invoker相互转换的过程，这两个过程中的关键。
+ *
  * ProxyFactory. (API/SPI, Singleton, ThreadSafe)
  */
 @SPI("javassist")
