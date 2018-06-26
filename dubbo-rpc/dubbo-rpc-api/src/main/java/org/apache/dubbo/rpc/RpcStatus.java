@@ -28,6 +28,8 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * URL statistics. (API, Cached, ThreadSafe)
  *
+ * 这个是　Ｒpc中对与ＵＲＬ进行封装的结果。
+ *
  * @see org.apache.dubbo.rpc.filter.ActiveLimitFilter
  * @see org.apache.dubbo.rpc.filter.ExecuteLimitFilter
  * @see org.apache.dubbo.rpc.cluster.loadbalance.LeastActiveLoadBalance

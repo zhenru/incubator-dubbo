@@ -24,6 +24,10 @@ import org.apache.dubbo.common.extension.SPI;
 /**
  * 这个是一个转换工厂，主要是用来将　一个定义的借口　　和　Invoker相互转换的过程，这两个过程中的关键。
  *
+ * 这个当中有一个
+ *
+ *
+ *
  * ProxyFactory. (API/SPI, Singleton, ThreadSafe)
  */
 @SPI("javassist")
@@ -31,6 +35,7 @@ public interface ProxyFactory {
 
     /**
      * create proxy.
+     * 生成一个代理类对象。
      *
      * @param invoker
      * @return proxy
@@ -49,7 +54,7 @@ public interface ProxyFactory {
 
     /**
      * create invoker.
-     *
+     *　　根据一个proxy 类型，　url 转变为一个　　Invoker，
      * @param <T>
      * @param proxy
      * @param type

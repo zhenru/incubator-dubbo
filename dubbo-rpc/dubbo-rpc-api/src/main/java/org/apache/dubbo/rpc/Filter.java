@@ -21,6 +21,8 @@ import org.apache.dubbo.common.extension.SPI;
 /**
  * Filter和我们常见的Servlet的Filter有点类似，主要是在当前执行的时候进行拦截。
  * 这里需要注意的排序应该如何实现呢，这里应该有一种实现的。
+ *
+ * 在Filter中使用了面向对象中的责任链的实现。
  * Filter. (SPI, Singleton, ThreadSafe)
  */
 @SPI

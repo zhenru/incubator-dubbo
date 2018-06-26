@@ -21,7 +21,7 @@ import org.apache.dubbo.common.extension.SPI;
 
 /**
  * InvokerListener. (SPI, Singleton, ThreadSafe)
- * 这个是主要是将添加一个Ｉnvoker对象中。
+ * 这个是主要是将添加一个Ｉnvoker对象中的生命周期中的一些方法的实现。
  */
 @SPI
 public interface InvokerListener {

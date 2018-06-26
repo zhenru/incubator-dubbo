@@ -82,6 +82,8 @@ public interface Invocation {
     /**
      * get the invoker in current context.
      *
+     * 获取到当前上下文中的　Invoker对象。
+     *
      * @return invoker.
      * @transient
      */
