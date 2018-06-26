@@ -38,9 +38,14 @@ public abstract class AbstractProtocol implements Protocol {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    /**
+     * 维护了所有的Exporter的列表
+     * 这些Exporter和Invoker接口如何实现都是系统中的关键。
+     */
     protected final Map<String, Exporter<?>> exporterMap = new ConcurrentHashMap<String, Exporter<?>>();
 
     //TODO SOFEREFENCE
+    //维护了所有的Invoker的引用。这个后期可能会改成软引用
     protected final Set<Invoker<?>> invokers = new ConcurrentHashSet<Invoker<?>>();
 
     protected static String serviceKey(URL url) {
@@ -49,6 +54,15 @@ public abstract class AbstractProtocol implements Protocol {
                 url.getParameter(Constants.GROUP_KEY));
     }
 
+    /**
+     * 生成服务的名称，主要是 group serviceName  serviceVersion port
+     * 其中  serviceName 和 prot是必填参数其他的不是。
+     * @param port
+     * @param serviceName
+     * @param serviceVersion
+     * @param serviceGroup
+     * @return
+     */
     protected static String serviceKey(int port, String serviceName, String serviceVersion, String serviceGroup) {
         return ProtocolUtils.serviceKey(port, serviceName, serviceVersion, serviceGroup);
     }

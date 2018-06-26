@@ -56,6 +56,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
+ *
  * dubbo protocol support.
  */
 public class DubboProtocol extends AbstractProtocol {
