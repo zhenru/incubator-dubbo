@@ -57,6 +57,8 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * dubbo protocol support.
+ * Ｄubbo实现的Protocol的实现
+ *
  */
 public class DubboProtocol extends AbstractProtocol {
 
