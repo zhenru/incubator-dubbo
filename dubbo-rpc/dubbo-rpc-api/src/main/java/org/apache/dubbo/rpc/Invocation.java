@@ -48,6 +48,7 @@ public interface Invocation {
 
     /**
      * get arguments.
+     * 这个是系统中的关键字段。
      *
      * @return arguments.
      * @serial

@@ -38,20 +38,36 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
+ * 抽象的Invoker对象，
  * AbstractInvoker.
  */
 public abstract class AbstractInvoker<T> implements Invoker<T> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    /**
+     * 封装的类型
+     */
     private final Class<T> type;
 
+    /**
+     * 系统相关的Url信息。
+     */
     private final URL url;
 
+    /**
+     * 额外传递的信息
+     */
     private final Map<String, String> attachment;
 
+    /**
+     * 是否可用用，这里可能会有向上的关闭这个接口，在Zk中关闭了这个接口可能就是通过这个来实现的。
+     */
     private volatile boolean available = true;
 
+    /**
+     * 是否删除。
+     */
     private AtomicBoolean destroyed = new AtomicBoolean(false);
 
     public AbstractInvoker(Class<T> type, URL url) {
@@ -131,10 +147,18 @@ public abstract class AbstractInvoker<T> implements Invoker<T> {
         }
         RpcInvocation invocation = (RpcInvocation) inv;
         invocation.setInvoker(this);
+        /**
+         * 在Invoker中本身就带了一个Attachment的扩展参数。
+         *
+         */
         if (attachment != null && attachment.size() > 0) {
             invocation.addAttachmentsIfAbsent(attachment);
+
         }
         Map<String, String> contextAttachments = RpcContext.getContext().getAttachments();
+        /**
+         * RpcContext中也会带有一些相关的 相关的Attachement对象。
+         */
         if (contextAttachments != null) {
             /**
              * invocation.addAttachmentsIfAbsent(context){@link RpcInvocation#addAttachmentsIfAbsent(Map)}should not be used here,
@@ -144,13 +168,18 @@ public abstract class AbstractInvoker<T> implements Invoker<T> {
              */
             invocation.addAttachments(contextAttachments);
         }
+        /**
+         * 如果这个接口是 异步的，这个时候需要将异步的信息写到 Attachments 中去。
+         */
         if (getUrl().getMethodParameter(invocation.getMethodName(), Constants.ASYNC_KEY, false)) {
             invocation.setAttachment(Constants.ASYNC_KEY, Boolean.TRUE.toString());
         }
+        //将相关调用哦的ID写到Invocation中，这样能够关联起来。todo 后面看下这个Id是如何生成的。
         RpcUtils.attachInvocationIdIfAsync(getUrl(), invocation);
 
 
         try {
+            //执行代码，这个执行就是将invocation中国的事情了，想如何执行都可以。随意怎么办。
             return doInvoke(invocation);
         } catch (InvocationTargetException e) { // biz exception
             Throwable te = e.getTargetException();
