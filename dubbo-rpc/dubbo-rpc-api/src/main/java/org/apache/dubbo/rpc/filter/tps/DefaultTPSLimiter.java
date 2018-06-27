@@ -23,6 +23,9 @@ import org.apache.dubbo.rpc.Invocation;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+/**
+ * 这个是ＴＰＳ限流的实现的关键。
+ */
 public class DefaultTPSLimiter implements TPSLimiter {
 
     private final ConcurrentMap<String, StatItem> stats

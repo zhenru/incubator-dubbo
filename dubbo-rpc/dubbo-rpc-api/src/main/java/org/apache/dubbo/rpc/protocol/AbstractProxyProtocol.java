@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
+ * 这个是代理类的ProxyProtocol的实现。
  * AbstractProxyProtocol
  */
 public abstract class AbstractProxyProtocol extends AbstractProtocol {

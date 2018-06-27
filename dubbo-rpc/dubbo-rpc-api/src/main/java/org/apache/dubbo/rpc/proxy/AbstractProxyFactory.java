@@ -26,6 +26,8 @@ import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.service.GenericService;
 
 /**
+ *
+ *　这个是一个服务类，主要是
  * AbstractProxyFactory
  */
 public abstract class AbstractProxyFactory implements ProxyFactory {
@@ -38,7 +40,9 @@ public abstract class AbstractProxyFactory implements ProxyFactory {
     @Override
     public <T> T getProxy(Invoker<T> invoker, boolean generic) throws RpcException {
         Class<?>[] interfaces = null;
+        //在dubbo中可以定义多个对象吗？
         String config = invoker.getUrl().getParameter(Constants.INTERFACES);
+        //这里还会有不止一借口的实现，这个可以看一下的呢？
         if (config != null && config.length() > 0) {
             String[] types = Constants.COMMA_SPLIT_PATTERN.split(config);
             if (types != null && types.length > 0) {
@@ -66,6 +70,13 @@ public abstract class AbstractProxyFactory implements ProxyFactory {
         return getProxy(invoker, interfaces);
     }
 
+    /**
+     * 根据几个types和　一个Invoker对象生成一个对象
+     * @param invoker
+     * @param types
+     * @param <T>
+     * @return
+     */
     public abstract <T> T getProxy(Invoker<T> invoker, Class<?>[] types);
 
 }

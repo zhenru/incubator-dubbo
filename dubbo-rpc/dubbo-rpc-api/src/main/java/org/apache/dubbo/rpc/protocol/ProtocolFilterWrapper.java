@@ -43,6 +43,14 @@ public class ProtocolFilterWrapper implements Protocol {
         this.protocol = protocol;
     }
 
+    /**
+     * 调用链是在这里实现的。调用链模式是如何实现的呢？　　todo 这里是如何实现的 muzhe
+     * @param invoker           执行器具
+     * @param key　              对应的key
+     * @param group             执行的对象。
+     * @param <T>               参数
+     * @return
+     */
     private static <T> Invoker<T> buildInvokerChain(final Invoker<T> invoker, String key, String group) {
         Invoker<T> last = invoker;
         List<Filter> filters = ExtensionLoader.getExtensionLoader(Filter.class).getActivateExtension(invoker.getUrl(), key, group);
@@ -100,6 +108,14 @@ public class ProtocolFilterWrapper implements Protocol {
         return protocol.export(buildInvokerChain(invoker, Constants.SERVICE_FILTER_KEY, Constants.PROVIDER));
     }
 
+    /**
+     * 这里封装的是　　　Consumer类型的责任链调用
+     * @param type Service class　　对应的类型
+     * @param url  URL address for the remote service　　这里是远端的掉哟个，这个当中还没有转变为Invoker.　　ＵＲＬ+ Class对象表示一个　　Invoker
+     * @param <T>
+     * @return
+     * @throws RpcException
+     */
     @Override
     public <T> Invoker<T> refer(Class<T> type, URL url) throws RpcException {
         if (Constants.REGISTRY_PROTOCOL.equals(url.getProtocol())) {

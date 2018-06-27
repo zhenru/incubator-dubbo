@@ -26,6 +26,7 @@ import org.apache.dubbo.rpc.RpcResult;
 import java.lang.reflect.InvocationTargetException;
 
 /**
+ * 抽象的对象实现，这个实现主要是将一个抽象的对象
  * InvokerWrapper
  */
 public abstract class AbstractProxyInvoker<T> implements Invoker<T> {

@@ -23,7 +23,9 @@ import org.apache.dubbo.rpc.Result;
 import org.apache.dubbo.rpc.RpcException;
 
 /**
- * InvokerWrapper
+ * 这个是封装了Invoker的封装类
+ * 包装了一个Invoker，然后使用这个Invoker中对应的对象。
+ * InvokerWrapper　　触发器的封装类
  */
 public class InvokerWrapper<T> implements Invoker<T> {
 

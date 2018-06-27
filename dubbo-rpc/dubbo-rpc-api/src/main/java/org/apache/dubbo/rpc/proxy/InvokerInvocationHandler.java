@@ -25,7 +25,9 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 /**
+ * 这个是从Invoker到一个Proxy的InvocationHandler的实现类。
  * InvokerHandler
+ *
  */
 public class InvokerInvocationHandler implements InvocationHandler {
 
@@ -53,16 +55,20 @@ public class InvokerInvocationHandler implements InvocationHandler {
         }
 
         RpcInvocation invocation;
+        //如果这个对象是　一个异步的方法。其中这里对异步的方法名称做了一个特殊的处理，就是在方法名称尾部加上了一个ＡＳＹＮＣ－ＳＵＦＦＩＸ
         if (RpcUtils.isAsyncFuture(method)) {
             Class<?> clazz = method.getDeclaringClass();
             String syncMethodName = methodName.substring(0, methodName.length() - Constants.ASYNC_SUFFIX.length());
+            //获取到对应的方法实体。
             Method syncMethod = clazz.getMethod(syncMethodName, method.getParameterTypes());
+            //将这个对象封装为一个RpcInvocation对象。同时将远端调用移动到远端去。
             invocation = new RpcInvocation(syncMethod, args);
             invocation.setAttachment(Constants.FUTURE_KEY, "true");
             invocation.setAttachment(Constants.ASYNC_KEY, "true");
         } else {
             invocation = new RpcInvocation(method, args);
         }
+        //通过当前的invoker去调用Invocation对象来实现对与远端的调用。
         return invoker.invoke(invocation).recreate();
     }
 

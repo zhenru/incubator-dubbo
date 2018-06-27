@@ -22,4 +22,8 @@ todo:
 
 
 
-在dubbo中Filter是如何添加到当前系统中的。这些Filter是如何发挥作用的。
+在dubbo中Filter是如何添加到当前系统中的。这些Filter是如何发挥作用的。ProtocolFilterWrapper.buildInvokerChain.这个方法是将当前系统中定义的所有的Filter对象加载到内存中，构造为一个责任链模型来实现。
+
+
+
+dubbo中的限流模式是如何实现的，常见的限流策略有哪些？其他的框架中限流是如何实现的？

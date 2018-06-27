@@ -18,6 +18,7 @@ package org.apache.dubbo.rpc.service;
 
 /**
  * Generic service interface
+ * 这个对象到底是干嘛的？　这个难道是在Ｓpring中用来使用替换方法的实现吗？
  *
  * @export
  */

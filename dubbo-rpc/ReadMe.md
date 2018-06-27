@@ -7,3 +7,4 @@ dubbo-rpc是整个系统的核心。
 
 软引用和强引用和弱引用之间的关系。系统中的关键。
 guava中的 cache是如何实现的？
+Invoker和　Export之间的区别是　Invoker中封装了　Filter和Listener的责任链调用。

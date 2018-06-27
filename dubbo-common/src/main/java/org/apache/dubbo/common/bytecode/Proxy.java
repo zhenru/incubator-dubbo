@@ -71,7 +71,7 @@ public abstract class Proxy {
 
     /**
      * Get proxy.
-     *
+     *  在这个方法中使用了javaassist对象来帮助实现当前系统中的对象的实现。
      * @param cl  class loader.
      * @param ics interface class array.
      * @return Proxy instance.

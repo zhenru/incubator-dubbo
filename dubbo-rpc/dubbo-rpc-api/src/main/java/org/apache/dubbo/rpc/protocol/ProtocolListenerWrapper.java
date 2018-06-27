@@ -32,6 +32,7 @@ import java.util.Collections;
 
 /**
  * ListenerProtocol
+ * 这个对象主要是将当前的Invoker中的对象中添加Listener.Lister分为　Consumer和　Provider这两种。
  */
 public class ProtocolListenerWrapper implements Protocol {
 

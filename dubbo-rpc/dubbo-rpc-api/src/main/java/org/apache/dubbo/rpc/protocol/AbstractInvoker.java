@@ -179,7 +179,9 @@ public abstract class AbstractInvoker<T> implements Invoker<T> {
 
 
         try {
-            //执行代码，这个执行就是将invocation中国的事情了，想如何执行都可以。随意怎么办。
+            //执行代码，这个执行就是将invocation中的事情了，想如何执行都可以。随意怎么办。
+            //在这个之前先将一些相关的数据写到invocation中去。然后　就使用这个方法来实现这个方法了。
+            //这里有一个doInvoke将会被转发到远端的系统中去。
             return doInvoke(invocation);
         } catch (InvocationTargetException e) { // biz exception
             Throwable te = e.getTargetException();

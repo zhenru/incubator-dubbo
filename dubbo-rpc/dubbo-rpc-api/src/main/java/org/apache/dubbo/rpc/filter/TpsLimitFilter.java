@@ -28,6 +28,9 @@ import org.apache.dubbo.rpc.filter.tps.DefaultTPSLimiter;
 import org.apache.dubbo.rpc.filter.tps.TPSLimiter;
 
 /**
+ *　使用默认的TPS限流是如何实现的。
+ *　todo :需要了解下限流是如何实现的。
+ *
  * Limit TPS for either service or service's particular method
  */
 @Activate(group = Constants.PROVIDER, value = Constants.TPS_LIMIT_RATE_KEY)

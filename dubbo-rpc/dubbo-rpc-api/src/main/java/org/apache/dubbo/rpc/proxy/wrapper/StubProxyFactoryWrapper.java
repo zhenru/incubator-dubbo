@@ -37,6 +37,7 @@ import java.lang.reflect.Constructor;
 
 /**
  * StubProxyFactoryWrapper
+ * 这个对象是将当前对象中的带有　子类的方法构造一个对象的实现。
  */
 public class StubProxyFactoryWrapper implements ProxyFactory {
 

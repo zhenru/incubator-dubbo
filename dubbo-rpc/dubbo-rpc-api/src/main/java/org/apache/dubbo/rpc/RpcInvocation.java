@@ -29,6 +29,7 @@ import java.util.Map;
  * RPC Invocation.
  *
  *这个是ＲＰＣ中的Invocation的一个实现。
+ * 这个也是最关键的一个实现RPCInvocation将本地方法转发到远端的服务器去调用。
  *
  * @serial Don't change the class name and properties.
  */
