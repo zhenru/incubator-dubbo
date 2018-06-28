@@ -33,3 +33,5 @@ dubbo中的限流模式是如何实现的，常见的限流策略有哪些？其
 todo:SLF4J和具体的日志框架之间的映射。
 
 logback框架是如何配置的。
+
+todo :　在dubbo是如何设置Invoker和ＵＲＬ和　RPCContext中添加　attachment信息？
