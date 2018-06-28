@@ -138,6 +138,12 @@ public abstract class AbstractInvoker<T> implements Invoker<T> {
         return getInterface() + " -> " + (getUrl() == null ? "" : getUrl().toString());
     }
 
+    /**
+     *这个方法中，将RPCContext中的额外信息，Invoker,url中的额外信息添加到invocation中去。然后就完全使用invocation进行执行。
+     * @param inv
+     * @return
+     * @throws RpcException
+     */
     @Override
     public Result invoke(Invocation inv) throws RpcException {
         if (destroyed.get()) {
