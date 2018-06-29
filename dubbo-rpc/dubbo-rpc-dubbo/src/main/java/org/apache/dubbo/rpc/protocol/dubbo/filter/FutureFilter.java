@@ -37,6 +37,8 @@ import java.lang.reflect.Method;
 import java.util.concurrent.Future;
 
 /**
+ * todo dubbo中实现了　异步方法调用 muzhe
+ *
  * EventFilter
  */
 @Activate(group = Constants.CONSUMER)

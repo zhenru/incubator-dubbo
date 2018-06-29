@@ -26,7 +26,10 @@ import org.apache.dubbo.rpc.RpcResult;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * 抽象的对象实现，这个实现主要是将一个抽象的对象
+ *
+ * 这个对象是将一个java对象调用的结果。
+ * 这个是提供给provider来使用的。
+ *
  * InvokerWrapper
  */
 public abstract class AbstractProxyInvoker<T> implements Invoker<T> {
@@ -82,6 +85,15 @@ public abstract class AbstractProxyInvoker<T> implements Invoker<T> {
         }
     }
 
+    /**
+     * 这个方法是提供给底层调用的。机会所有的方法都是这样
+     * @param proxy             这个是具体的对象实例
+     * @param methodName        方法名称
+     * @param parameterTypes    参数类型
+     * @param arguments         参数名称
+     * @return                  执行结果
+     * @throws Throwable
+     */
     protected abstract Object doInvoke(T proxy, String methodName, Class<?>[] parameterTypes, Object[] arguments) throws Throwable;
 
     @Override

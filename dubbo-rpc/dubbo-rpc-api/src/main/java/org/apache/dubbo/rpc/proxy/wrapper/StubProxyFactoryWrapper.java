@@ -38,6 +38,9 @@ import java.lang.reflect.Constructor;
 /**
  * StubProxyFactoryWrapper
  * 这个对象是将当前对象中的带有　子类的方法构造一个对象的实现。
+ * 如果在refer中使用了一个带方法的实现，这个时候就需要使用到这个代理工厂方法了。
+ * 有机会看下这里是怎么实现的。
+ *
  */
 public class StubProxyFactoryWrapper implements ProxyFactory {
 

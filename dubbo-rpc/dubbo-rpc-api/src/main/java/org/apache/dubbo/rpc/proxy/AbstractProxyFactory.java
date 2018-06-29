@@ -27,7 +27,8 @@ import org.apache.dubbo.rpc.service.GenericService;
 
 /**
  *
- *　这个是一个服务类，主要是
+ *　　这个类是用来将一个Invoker转变为一个　代理对象的工具类
+ *
  * AbstractProxyFactory
  */
 public abstract class AbstractProxyFactory implements ProxyFactory {
@@ -42,7 +43,7 @@ public abstract class AbstractProxyFactory implements ProxyFactory {
         Class<?>[] interfaces = null;
         //在dubbo中可以定义多个对象吗？
         String config = invoker.getUrl().getParameter(Constants.INTERFACES);
-        //这里还会有不止一借口的实现，这个可以看一下的呢？
+        //这里还会有不止一个接口的实现，这个可以看一下的呢？
         if (config != null && config.length() > 0) {
             String[] types = Constants.COMMA_SPLIT_PATTERN.split(config);
             if (types != null && types.length > 0) {

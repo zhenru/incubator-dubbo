@@ -21,6 +21,7 @@ import org.apache.dubbo.remoting.Channel;
 import org.apache.dubbo.remoting.RemotingException;
 
 /**
+ * 这个是干啥的呀？
  * TelnetHandler
  */
 @SPI

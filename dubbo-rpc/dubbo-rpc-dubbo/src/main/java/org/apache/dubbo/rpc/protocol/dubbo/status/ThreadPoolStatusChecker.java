@@ -29,6 +29,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * ThreadPoolStatusChecker
+ * 这个个ThreadPoolStatusChecker是如何实现的呢？在这个系统中到底是干啥的
  */
 @Activate
 public class ThreadPoolStatusChecker implements StatusChecker {

@@ -35,6 +35,7 @@ import org.apache.dubbo.rpc.protocol.AbstractInvoker;
 import java.net.InetSocketAddress;
 
 /**
+ * 把当前的Invoker绑定到某一个渠道上去。
  * Wrap the existing invoker on the channel.
  */
 class ChannelWrappedInvoker<T> extends AbstractInvoker<T> {

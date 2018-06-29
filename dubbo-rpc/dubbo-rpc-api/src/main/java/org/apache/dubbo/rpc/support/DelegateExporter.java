@@ -20,6 +20,7 @@ import org.apache.dubbo.rpc.Exporter;
 import org.apache.dubbo.rpc.Invoker;
 
 /**
+ * 这个是整个系统的关键
  * DelegateExporter
  */
 public class DelegateExporter<T> implements Exporter<T> {
