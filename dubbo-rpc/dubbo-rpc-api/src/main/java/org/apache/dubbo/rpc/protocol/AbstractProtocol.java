@@ -40,7 +40,7 @@ public abstract class AbstractProtocol implements Protocol {
 
     /**
      * 维护了所有的Exporter的列表
-     * 这些Exporter和Invoker接口如何实现都是系统中的关键。
+     * key:是根据url生成的group,interface, version, port组成的字符串.所有的Ｐrotocol都会使用到这个对象。
      */
     protected final Map<String, Exporter<?>> exporterMap = new ConcurrentHashMap<String, Exporter<?>>();
 

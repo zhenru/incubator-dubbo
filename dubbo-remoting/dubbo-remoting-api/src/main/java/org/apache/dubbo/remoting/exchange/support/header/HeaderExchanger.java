@@ -28,6 +28,7 @@ import org.apache.dubbo.remoting.transport.DecodeHandler;
 /**
  * DefaultMessenger
  *
+ *  这个ＨeaderExchanger功能是什么？
  *
  */
 public class HeaderExchanger implements Exchanger {

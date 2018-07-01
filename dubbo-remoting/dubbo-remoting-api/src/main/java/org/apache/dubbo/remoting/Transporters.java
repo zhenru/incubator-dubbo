@@ -23,6 +23,7 @@ import org.apache.dubbo.remoting.transport.ChannelHandlerAdapter;
 import org.apache.dubbo.remoting.transport.ChannelHandlerDispatcher;
 
 /**
+ * todo 传输层是如何实现的？ muzhe
  * Transporter facade. (API, Static, ThreadSafe)
  */
 public class Transporters {

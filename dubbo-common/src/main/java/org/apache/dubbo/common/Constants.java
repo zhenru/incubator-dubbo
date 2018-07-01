@@ -258,7 +258,9 @@ public class Constants {
     public static final String PROMPT_KEY = "prompt";
 
     public static final String DEFAULT_PROMPT = "dubbo>";
-
+    /**
+     * 默认的编码方式,对应的是Ｃodec类的实现类。
+     */
     public static final String CODEC_KEY = "codec";
 
     public static final String SERIALIZATION_KEY = "serialization";
@@ -273,12 +275,21 @@ public class Constants {
 
     public static final String TRANSPORTER_KEY = "transporter";
 
+    /**
+     * 表示提供服务的方式，默认的是　netty方式。
+     */
     public static final String SERVER_KEY = "server";
 
+    /**
+     *    todo 这个是怎么实现的？ muzhe
+     */
     public static final String CLIENT_KEY = "client";
 
     public static final String ID_KEY = "id";
 
+    /**
+     * 表示当前的服务是同步还是异步调用方式。
+     */
     public static final String ASYNC_KEY = "async";
 
     public static final String FUTURE_KEY = "async_future";
@@ -323,6 +334,9 @@ public class Constants {
 
     public static final String GROUP_KEY = "group";
 
+    /**
+     * 这个对象的功能是什么呢？
+     */
     public static final String PATH_KEY = "path";
 
     public static final String INTERFACE_KEY = "interface";

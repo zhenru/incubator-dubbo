@@ -39,3 +39,9 @@ todo :　在dubbo是如何设置Invoker和ＵＲＬ和　RPCContext中添加　a
 
 
 todo:dubbo中的异步调用是如何实现的？FutureFilter中是如何实现的。？
+
+todo:dubbo中异步调用是如何实现的。ExchangeHandler　中relay方法中实现了这个方法。**也许在dubboz中所有的调用都是使用了ＣompletableFuture类实现的。**
+
+todo: juc中　CompletableFuture
+
+ＥxchangerHandler是这个方法的核心。

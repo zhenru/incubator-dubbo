@@ -325,6 +325,10 @@ public class RegistryProtocol implements Protocol {
         bounds.clear();
     }
 
+    /**
+     * 这个方法传递到　ＤubboProtocol中的Ｉnvoker的实现，
+     * @param <T>
+     */
     public static class InvokerDelegete<T> extends InvokerWrapper<T> {
         private final Invoker<T> invoker;
 

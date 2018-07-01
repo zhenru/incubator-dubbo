@@ -66,6 +66,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * </ul>
  *
  * todo 有一种说法是所有的配置最后最终都会被转变为url,注册到注册中心上，然后通过注册中心将数据转发给服务消费方 muzhe
+ * 将配置的所有参数都　记录到当前url中，然后通过一个toString方法将当前的参数组装为一个url的形式。
+ * 同时这个方法中的所有的参数也会被记录在 parameters中。
  *
  * @see java.net.URL
  * @see java.net.URI
@@ -949,6 +951,7 @@ public /**final**/ class URL implements Serializable {
         }
         Map<String, String> map = new HashMap<String, String>(getParameters());
         map.put(key, value);
+        //todo 这里为什么使用一个新的url，而不是在原来的基础添加一个对象呢？而且这个parameters是共享的。 muzhe
         return new URL(protocol, username, password, host, port, path, map);
     }
 

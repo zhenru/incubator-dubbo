@@ -76,13 +76,20 @@ public class DubboProtocol extends AbstractProtocol {
     //consumer side export a stub service for dispatching event
     //servicekey-stubmethods
     private final ConcurrentMap<String, String> stubServiceMethodsMap = new ConcurrentHashMap<String, String>();
-    private ExchangeHandler requestHandler = new ExchangeHandlerAdapter() {
+    private ExchangeHandler requestHandler = new ExchangeHandlerAdapter() {//这个需要看一下，业务后期在运行的时候，就是使用这个ＲequestHadnler对象来处理来自远端的请求的。
 
+        /**
+         * 这里看下这个方法完成的工作？
+         * @param channel
+         * @param message
+         * @return
+         * @throws RemotingException
+         */
         @Override
         public CompletableFuture<Object> reply(ExchangeChannel channel, Object message) throws RemotingException {
-            if (message instanceof Invocation) {
-                Invocation inv = (Invocation) message;
-                Invoker<?> invoker = getInvoker(channel, inv);
+            if (message instanceof Invocation) {//所有对象都需要被转换为一个　Ｉnvocation对象。
+                Invocation inv = (Invocation) message;//将当前的对象转变为一个　invocation
+                Invoker<?> invoker = getInvoker(channel, inv);//根据ExchangeChannel和Ｉnvocation搜索到一个Invoker对象。
                 // need to consider backward-compatibility if it's a callback
                 if (Boolean.TRUE.toString().equals(inv.getAttachments().get(IS_CALLBACK_SERVICE_INVOKE))) {
                     String methodsStr = invoker.getUrl().getParameters().get("methods");
@@ -106,13 +113,17 @@ public class DubboProtocol extends AbstractProtocol {
                         return null;
                     }
                 }
+                //是同步服务还是异步服务，异步服务需要把这个请求写到　ＲpcContext中去。
                 boolean supportServerAsync = invoker.getUrl().getMethodParameter(inv.getMethodName(), Constants.ASYNC_KEY, false);
                 CompletableFuture<Object> resultFuture = new CompletableFuture<>();
                 RpcContext rpcContext = RpcContext.getContext();
                 if (supportServerAsync) {
+
+                    //如用是一个异步调用
                     rpcContext.setAsyncContext(new AsyncContextImpl(resultFuture));
                 }
                 rpcContext.setRemoteAddress(channel.getRemoteAddress());
+                //这里会有方法的调用。
                 Result result = invoker.invoke(inv);
                 if (!rpcContext.isAsyncStarted()) {
                     resultFuture.complete(result);
@@ -210,10 +221,17 @@ public class DubboProtocol extends AbstractProtocol {
                         .equals(NetUtils.filterLocalHost(address.getAddress().getHostAddress()));
     }
 
+    /**
+     * 根据　　chanel和invocation 获取到到一个Ｉnvoker.  通过Ｃhannel总存放的port和　Ｉnvocation中Ａttachement中存放的一些参数生成一个　serviceKey，然后获取到对应的　Exporter对象。
+     * @param channel   Channel 是比较底层的一个对象实现。　　提供了port.
+     * @param inv       这个是会话域　　invocation中会包含有　　除了port以外的所有的属性。
+     * @return
+     * @throws RemotingException
+     */
     Invoker<?> getInvoker(Channel channel, Invocation inv) throws RemotingException {
         boolean isCallBackServiceInvoke = false;
         boolean isStubServiceInvoke = false;
-        int port = channel.getLocalAddress().getPort();
+        int port = channel.getLocalAddress().getPort();//获取到端口。
         String path = inv.getAttachments().get(Constants.PATH_KEY);
         // if it's callback service on client side
         isStubServiceInvoke = Boolean.TRUE.toString().equals(inv.getAttachments().get(Constants.STUB_EVENT_KEY));
@@ -226,6 +244,7 @@ public class DubboProtocol extends AbstractProtocol {
             path = inv.getAttachments().get(Constants.PATH_KEY) + "." + inv.getAttachments().get(Constants.CALLBACK_SERVICE_KEY);
             inv.getAttachments().put(IS_CALLBACK_SERVICE_INVOKE, Boolean.TRUE.toString());
         }
+        //根据　　端口号，interface,版本号和group的信息生成一个　ｋｅｙ
         String serviceKey = serviceKey(port, path, inv.getAttachments().get(Constants.VERSION_KEY), inv.getAttachments().get(Constants.GROUP_KEY));
 
         DubboExporter<?> exporter = (DubboExporter<?>) exporterMap.get(serviceKey);
@@ -245,19 +264,30 @@ public class DubboProtocol extends AbstractProtocol {
         return DEFAULT_PORT;
     }
 
+    /**
+     * 　　todo 这个方法是给provider方法使用，这个方法是将当前的invoker转变为一个Invoker muzhe
+     * todo 为什么这个当中的invoker是RegistryProtocol中的内部类，InvokerDelegete?这个是为什么呢？这个需要做一个关键的操作 muzhe
+     *
+     * @param invoker Service invoker　有很多的invoker这个invoker是按照那一种逻辑添加进来的。
+     * @param <T>　　　这个是当前系统中的一个类型
+     * @return
+     * @throws RpcException
+     */
     @Override
     public <T> Exporter<T> export(Invoker<T> invoker) throws RpcException {
+        //从Ｉnvoker中获取到当前的Ｉnvoker对应的ＵＲＬ.通过这个ｕｒｌ，在其他机器上的对象能够调用到这个方法。范例如下：
+//        dubbo://10.239.10.19:20880/org.apache.dubbo.demo.DemoService?anyhost=true&application=demo-provider&bind.ip=10.239.10.19&bind.port=20880&dubbo=2.0.2&generic=false&interface=org.apache.dubbo.demo.DemoService&methods=sayHello&pid=20996&qos.port=22222&side=provider&timestamp=1530409906613
         URL url = invoker.getUrl();
 
         // export service.
-        String key = serviceKey(url);
-        DubboExporter<T> exporter = new DubboExporter<T>(invoker, key, exporterMap);
-        exporterMap.put(key, exporter);
+        String key = serviceKey(url);//根据url计算当前的服务的key，这个key是表示interface,group,version.端口号来调用。
+        DubboExporter<T> exporter = new DubboExporter<T>(invoker, key, exporterMap);//构造一个Ｅxporter对象，其中exporterMap这个对象是属于当前的Ｐrotocol的。是在ＡbstracrtProtocol对象中保存了这个Ｍap.
+        exporterMap.put(key, exporter);//在暴露服务的时候将　当前exporter添加到　exproterMap中去的。根据
 
-        //export an stub service for dispatching event
+        //export an stub service for dispatching event. todo dubbo中stu_event_key中是如何使用的， muzhe
         Boolean isStubSupportEvent = url.getParameter(Constants.STUB_EVENT_KEY, Constants.DEFAULT_STUB_EVENT);
-        Boolean isCallbackservice = url.getParameter(Constants.IS_CALLBACK_SERVICE, false);
-        if (isStubSupportEvent && !isCallbackservice) {
+        Boolean isCallbackservice = url.getParameter(Constants.IS_CALLBACK_SERVICE, false);//todo calBackServices 是如何使用的，这个也许是一个额外的功能，通过这个状态绑定一些额外的操作。 muzhe
+        if (isStubSupportEvent && !isCallbackservice) {//这里后期单独看下这个是如何实现的stub_event和　callbackService的实现
             String stubServiceMethods = url.getParameter(Constants.STUB_EVENT_METHODS_KEY);
             if (stubServiceMethods == null || stubServiceMethods.length() == 0) {
                 if (logger.isWarnEnabled()) {
@@ -269,46 +299,46 @@ public class DubboProtocol extends AbstractProtocol {
             }
         }
 
-        openServer(url);
-        optimizeSerialization(url);
+        openServer(url);//当前机器提供服务。
+        optimizeSerialization(url);//这里是更具url来做了一些工作，但是具体的使用了invoker其实是没有太多关系的。
         return exporter;
     }
-
+    //根据Ｕrl向外暴露服务,将当前的url封装为一个ExchangeServer对象，只要封装为了一个ExchangeServer这个时候就表示这个对象发布成功了。
     private void openServer(URL url) {
         // find server.
-        String key = url.getAddress();
+        String key = url.getAddress();//获取当前机器的地址　ip:port
         //client can export a service which's only for server to invoke
-        boolean isServer = url.getParameter(Constants.IS_SERVER_KEY, true);
+        boolean isServer = url.getParameter(Constants.IS_SERVER_KEY, true);//这里是暴露服务，所以默认的是服务端口，那些情况下这里不是　true呢？
         if (isServer) {
             ExchangeServer server = serverMap.get(key);
             if (server == null) {
-                synchronized (this) {
+                synchronized (this) {//这里使用了　一个　　dubboCheck，来保证创建Ｓerver的过程是线程安全的。
                     server = serverMap.get(key);
-                    if (server == null) {
-                        serverMap.put(key, createServer(url));
+                    if (server == null) {//如果对象存在就创建一个Ｓerver，ＵＲＬ　－－> Server
+                        serverMap.put(key, createServer(url));//服务器端的ＥxchangerServer是一个HeaderExchangerServer.
                     }
                 }
             } else {
-                // server supports reset, use together with override
+                // server supports reset, use together with override.如果Ｓerver存在了就进行重置
                 server.reset(url);
             }
         }
     }
-
+//这里底层使用那一种　传输层协议，使用那一种序列化协议都有Protocol来决定。
     private ExchangeServer createServer(URL url) {
-        // send readonly event when server closes, it's enabled by default
+        // send readonly event when server closes, it's enabled by default   todo ? 这个是什么意思，这里向url中添加一个新的参数。 muzhe
         url = url.addParameterIfAbsent(Constants.CHANNEL_READONLYEVENT_SENT_KEY, Boolean.TRUE.toString());
-        // enable heartbeat by default
+        // enable heartbeat by default默
         url = url.addParameterIfAbsent(Constants.HEARTBEAT_KEY, String.valueOf(Constants.DEFAULT_HEARTBEAT));
-        String str = url.getParameter(Constants.SERVER_KEY, Constants.DEFAULT_REMOTING_SERVER);
+        String str = url.getParameter(Constants.SERVER_KEY, Constants.DEFAULT_REMOTING_SERVER);//日程
 
-        if (str != null && str.length() > 0 && !ExtensionLoader.getExtensionLoader(Transporter.class).hasExtension(str))
+        if (str != null && str.length() > 0 && !ExtensionLoader.getExtensionLoader(Transporter.class).hasExtension(str))//看一下是否有对应的Transporter的实现类，这里是netty，如果没有就报错。
             throw new RpcException("Unsupported server type: " + str + ", url: " + url);
 
-        url = url.addParameter(Constants.CODEC_KEY, DubboCodec.NAME);
+        url = url.addParameter(Constants.CODEC_KEY, DubboCodec.NAME);//这里是哟个那一种编码方式
         ExchangeServer server;
         try {
-            server = Exchangers.bind(url, requestHandler);
+            server = Exchangers.bind(url, requestHandler);//这个requestHeader是怎么回事情？这个url和RequestHandler绑定到这个Ｅxchangers上，这个绑定是将一个url和一个ＲequestHandler绑定起来。
         } catch (RemotingException e) {
             throw new RpcException("Fail to start server(url: " + url + ") " + e.getMessage(), e);
         }
@@ -321,7 +351,7 @@ public class DubboProtocol extends AbstractProtocol {
         }
         return server;
     }
-
+//todo 这个方法的功能是干啥的？ muzhe
     private void optimizeSerialization(URL url) throws RpcException {
         String className = url.getParameter(Constants.OPTIMIZER_KEY, "");
         if (StringUtils.isEmpty(className) || optimizers.contains(className)) {
@@ -356,6 +386,14 @@ public class DubboProtocol extends AbstractProtocol {
         }
     }
 
+    /**
+     * todo 这里是将一个方法的定义转变为一个invoker的过程。这个是提供给　consumer方法调用的。 muzhe
+     * @param serviceType
+     * @param url  URL address for the remote service
+     * @param <T>
+     * @return
+     * @throws RpcException
+     */
     @Override
     public <T> Invoker<T> refer(Class<T> serviceType, URL url) throws RpcException {
         optimizeSerialization(url);

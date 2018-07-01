@@ -20,6 +20,11 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Provider {
 
+    /**
+     * 这个方法将会调用export方法，将一个定义的
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         //Prevent to get IPV6 address,this way only work in debug mode
         //But you can pass use -Djava.net.preferIPv4Stack=true,then it work well whether in debug mode or not
