@@ -216,7 +216,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
             doExport();
         }
     }
-
+//这里是真正的发布接口的地方。
     protected synchronized void doExport() {
         if (unexported) {
             throw new IllegalStateException("Already unexported!");
@@ -262,7 +262,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
                 monitor = application.getMonitor();
             }
         }
-        if (ref instanceof GenericService) {
+        if (ref instanceof GenericService) {//todo 这个应该如何实现。
             interfaceClass = GenericService.class;
             if (StringUtils.isEmpty(generic)) {
                 generic = Boolean.TRUE.toString();
@@ -314,7 +314,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
         if (path == null || path.length() == 0) {
             path = interfaceName;
         }
-        doExportUrls();
+        doExportUrls();//把当前对象转变为一个URL.这些URL存放在哪里呢》
         ProviderModel providerModel = new ProviderModel(getUniqueServiceName(), this, ref);
         ApplicationModel.initProviderModel(getUniqueServiceName(), providerModel);
     }

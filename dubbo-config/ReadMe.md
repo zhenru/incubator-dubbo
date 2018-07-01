@@ -6,3 +6,8 @@ dubbo配置的信息，通过配置选项能够是dubbo在启动的时候依赖�
 服务优化：通过配置能够优化服务执行的性能。
 
 所有的配置最终都会被转换为url。
+
+看下代码中 DubboNamespaceHandler中指定了在xml中定义的各种标签，以及标签对应的对象，以及使用的Parser。在dubbo中使用了一个DubboBeanDefinitionParser来解析所有对象。这里后期可以看下是否能够进行拆分。 todo
+
+所有的标签都对应了一个XXXConfig对象，
+在Spring当中，其中service和refer比较的特殊，分别实现实现了对象ServiceBean和ReferenceBean这两个对象。这两个对象实现了`InitializingBean`，能够bean启动完成以后根据属性将当前的ServiceBean和ReferenceBean注入到容器中去。。

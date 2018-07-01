@@ -135,8 +135,8 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
 
     @Override
     @SuppressWarnings({"unchecked", "deprecation"})
-    public void afterPropertiesSet() throws Exception {
-        if (getProvider() == null) {
+    public void afterPropertiesSet() throws Exception {//这里是将config中所有的属性注入到ServiceBean中来然后ServiceBean开始启动.将相关的属性添加到系统中去。
+        if (getProvider() == null) {//Provider和ServiceConfit之间的关系 todo
             Map<String, ProviderConfig> providerConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ProviderConfig.class, false, false);
             if (providerConfigMap != null && providerConfigMap.size() > 0) {
                 Map<String, ProtocolConfig> protocolConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ProtocolConfig.class, false, false);
@@ -167,6 +167,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                 }
             }
         }
+        //获取到ApplicationConfig的信息,这个ApplicationConfig是之前在解析XML的时候解析的吗？加载ApplicationConfig形象，使用最后出现的哪一个。
         if (getApplication() == null
                 && (getProvider() == null || getProvider().getApplication() == null)) {
             Map<String, ApplicationConfig> applicationConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ApplicationConfig.class, false, false);
@@ -181,7 +182,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                     }
                 }
                 if (applicationConfig != null) {
-                    setApplication(applicationConfig);
+                    setApplication(applicationConfig);//将这个application写到AbstractInterfaceConfig中去。
                 }
             }
         }
@@ -199,7 +200,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                     }
                 }
                 if (moduleConfig != null) {
-                    setModule(moduleConfig);
+                    setModule(moduleConfig);//将ModuleConfig写入到 AbastractInterfaceConfig中去，这个过程主要是
                 }
             }
         }
@@ -214,14 +215,14 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                         registryConfigs.add(config);
                     }
                 }
-                if (!registryConfigs.isEmpty()) {
+                if (!registryConfigs.isEmpty()) {//将registry注入到AbstractInterfaceConfig中去。
                     super.setRegistries(registryConfigs);
                 }
             }
         }
         if (getMonitor() == null
                 && (getProvider() == null || getProvider().getMonitor() == null)
-                && (getApplication() == null || getApplication().getMonitor() == null)) {
+                && (getApplication() == null || getApplication().getMonitor() == null)) {//将monitor注入到AbstraceInterfaceConfig中去。
             Map<String, MonitorConfig> monitorConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, MonitorConfig.class, false, false);
             if (monitorConfigMap != null && monitorConfigMap.size() > 0) {
                 MonitorConfig monitorConfig = null;
@@ -238,7 +239,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                 }
             }
         }
-        if ((getProtocols() == null || getProtocols().isEmpty())
+        if ((getProtocols() == null || getProtocols().isEmpty()) //注入 ProtocolConfig
                 && (getProvider() == null || getProvider().getProtocols() == null || getProvider().getProtocols().isEmpty())) {
             Map<String, ProtocolConfig> protocolConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ProtocolConfig.class, false, false);
             if (protocolConfigMap != null && protocolConfigMap.size() > 0) {
@@ -261,7 +262,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
             }
         }
         if (!isDelay()) {
-            export();
+            export();//如果不是延迟加载就直接发布接口。这个接口是在ServiceConfig中实现的。在Spring中使用InitializationBean对象将会是一个很好的实现的方式。
         }
     }
 
@@ -277,7 +278,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
     protected Class getServiceClass(T ref) {
         if (AopUtils.isAopProxy(ref)) {
             return AopUtils.getTargetClass(ref);
-        }
+        }//如果使用了aop就使用AopUtil中获取到原生的对象类型
         return super.getServiceClass(ref);
     }
 }

@@ -77,10 +77,11 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
         beanDefinition.setBeanClass(beanClass);
         beanDefinition.setLazyInit(false);
         String id = element.getAttribute("id");
+        //给Id赋值，如果没有就使用beanName。如果还没有就使用 class的名称。如果有重复的就升序实现。
         if ((id == null || id.length() == 0) && required) {
             String generatedBeanName = element.getAttribute("name");
             if (generatedBeanName == null || generatedBeanName.length() == 0) {
-                if (ProtocolConfig.class.equals(beanClass)) {
+                if (ProtocolConfig.class.equals(beanClass)) {// ProtocolConfig
                     generatedBeanName = "dubbo";
                 } else {
                     generatedBeanName = element.getAttribute("interface");
@@ -95,14 +96,20 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
                 id = generatedBeanName + (counter++);
             }
         }
+
         if (id != null && id.length() > 0) {
+            //如果定义了重复的id这个时候会报错。
             if (parserContext.getRegistry().containsBeanDefinition(id)) {
                 throw new IllegalStateException("Duplicate spring bean id " + id);
             }
+            //先默认的将当前对象注册到 容器中去。这个容器在ParseContext.中的Registry中。后面再往这个BeanDefinition中注入属性。
             parserContext.getRegistry().registerBeanDefinition(id, beanDefinition);
             beanDefinition.getPropertyValues().addPropertyValue("id", id);
         }
+        //开始将 对应的信息解析额为对应的config。
+        //首先是ProtocolConfig信息。
         if (ProtocolConfig.class.equals(beanClass)) {
+            logger.info("开始 protocol >>  ProtocolConfig.class对象");
             for (String name : parserContext.getRegistry().getBeanDefinitionNames()) {
                 BeanDefinition definition = parserContext.getRegistry().getBeanDefinition(name);
                 PropertyValue property = definition.getPropertyValues().getPropertyValue("protocol");
@@ -113,7 +120,9 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
                     }
                 }
             }
-        } else if (ServiceBean.class.equals(beanClass)) {
+        }
+        else if (ServiceBean.class.equals(beanClass)) {
+            logger.info("开始 service >> ServiceBean");
             String className = element.getAttribute("class");
             if (className != null && className.length() > 0) {
                 RootBeanDefinition classDefinition = new RootBeanDefinition();
@@ -122,23 +131,27 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
                 parseProperties(element.getChildNodes(), classDefinition);
                 beanDefinition.getPropertyValues().addPropertyValue("ref", new BeanDefinitionHolder(classDefinition, id + "Impl"));
             }
-        } else if (ProviderConfig.class.equals(beanClass)) {
+        }
+        //开始解析 ProiderConfig
+        else if (ProviderConfig.class.equals(beanClass)) {//
+            logger.info("开始 provider >> ProviderConfig");
             parseNested(element, parserContext, ServiceBean.class, true, "service", "provider", id, beanDefinition);
         } else if (ConsumerConfig.class.equals(beanClass)) {
+            logger.info("开始  ConsumerCondig 转变为  ReferenceBean 对象。");
             parseNested(element, parserContext, ReferenceBean.class, false, "reference", "consumer", id, beanDefinition);
         }
         Set<String> props = new HashSet<String>();
         ManagedMap parameters = null;
-        for (Method setter : beanClass.getMethods()) {
+        for (Method setter : beanClass.getMethods()) {//获取到当前的config对象中的所有的属性。
             String name = setter.getName();
             if (name.length() > 3 && name.startsWith("set")
                     && Modifier.isPublic(setter.getModifiers())
-                    && setter.getParameterTypes().length == 1) {
+                    && setter.getParameterTypes().length == 1) {//使用set方法来确定属性。不看具体的属性。相比于getter中会有is
                 Class<?> type = setter.getParameterTypes()[0];
                 String property = StringUtils.camelToSplitName(name.substring(3, 4).toLowerCase() + name.substring(4), "-");
                 props.add(property);
                 Method getter = null;
-                try {
+                try {//然后获取get方法。，同时处理get和is的情况。
                     getter = beanClass.getMethod("get" + name.substring(3), new Class<?>[0]);
                 } catch (NoSuchMethodException e) {
                     try {
@@ -146,23 +159,23 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
                     } catch (NoSuchMethodException e2) {
                     }
                 }
-                if (getter == null
+                if (getter == null //如果不存在就结束。
                         || !Modifier.isPublic(getter.getModifiers())
                         || !type.equals(getter.getReturnType())) {
                     continue;
                 }
-                if ("parameters".equals(property)) {
+                if ("parameters".equals(property)) {//需要额外进行处理的一些配置属性。
                     parameters = parseParameters(element.getChildNodes(), beanDefinition);
                 } else if ("methods".equals(property)) {
                     parseMethods(id, element.getChildNodes(), beanDefinition, parserContext);
                 } else if ("arguments".equals(property)) {
                     parseArguments(id, element.getChildNodes(), beanDefinition, parserContext);
                 } else {
-                    String value = element.getAttribute(property);
+                    String value = element.getAttribute(property);//获取到对应的属性值
                     if (value != null) {
                         value = value.trim();
                         if (value.length() > 0) {
-                            if ("registry".equals(property) && RegistryConfig.NO_AVAILABLE.equalsIgnoreCase(value)) {
+                            if ("registry".equals(property) && RegistryConfig.NO_AVAILABLE.equalsIgnoreCase(value)) {//这里也是一些保留属性的实现。
                                 RegistryConfig registryConfig = new RegistryConfig();
                                 registryConfig.setAddress(RegistryConfig.NO_AVAILABLE);
                                 beanDefinition.getPropertyValues().addPropertyValue(property, registryConfig);
@@ -174,7 +187,7 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
                                 parseMultiRef("protocols", value, beanDefinition, parserContext);
                             } else {
                                 Object reference;
-                                if (isPrimitive(type)) {
+                                if (isPrimitive(type)) {//将系统中的保留字段给剔除
                                     if ("async".equals(property) && "false".equals(value)
                                             || "timeout".equals(property) && "0".equals(value)
                                             || "delay".equals(property) && "0".equals(value)
@@ -188,14 +201,14 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
                                 } else if ("protocol".equals(property)
                                         && ExtensionLoader.getExtensionLoader(Protocol.class).hasExtension(value)
                                         && (!parserContext.getRegistry().containsBeanDefinition(value)
-                                        || !ProtocolConfig.class.getName().equals(parserContext.getRegistry().getBeanDefinition(value).getBeanClassName()))) {
+                                        || !ProtocolConfig.class.getName().equals(parserContext.getRegistry().getBeanDefinition(value).getBeanClassName()))) {//这里处理protocol的属性对象。
                                     if ("dubbo:provider".equals(element.getTagName())) {
                                         logger.warn("Recommended replace <dubbo:provider protocol=\"" + value + "\" ... /> to <dubbo:protocol name=\"" + value + "\" ... />");
                                     }
                                     // backward compatibility
                                     ProtocolConfig protocol = new ProtocolConfig();
                                     protocol.setName(value);
-                                    reference = protocol;
+                                    reference = protocol;//创建ProtocolConfit对象。
                                 } else if ("onreturn".equals(property)) {
                                     int index = value.lastIndexOf(".");
                                     String returnRef = value.substring(0, index);
@@ -223,7 +236,7 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
                                     }
                                     reference = new RuntimeBeanReference(value);
                                 }
-                                beanDefinition.getPropertyValues().addPropertyValue(property, reference);
+                                beanDefinition.getPropertyValues().addPropertyValue(property, reference);//将当前属性中的变量添加到这个属性中去。
                             }
                         }
                     }
